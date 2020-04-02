@@ -2,7 +2,7 @@ import unittest
 from character import Character
 from enemy import Enemy
 from weaponAndSpell import (Weapon, Spell)
-
+from Hero import Hero
 
 class TestCharacter(unittest.TestCase):
 
@@ -183,6 +183,33 @@ class TestEnemy(unittest.TestCase):
 		result = enemy.attack(by='weapon')
 
 		self.assertEqual(result, 5)
+    
+
+class TestHero(unittest.TestCase):
+
+	def test_known_as(self):
+		h = Hero(name="Bron", title="Dragonslayer", health=100, mana=100, mana_regeneration_rate=2)
+		expected = 'Bron the Dragonslayer'
+		returned = h.known_as()
+
+		self.assertEqual(returned, expected)
+
+	def test_take_mana_but_not_reach_start_value(self):
+		h = Hero(name="Bron", title="Dragonslayer", health=100, mana=100, mana_regeneration_rate=2)
+		h.mana = 20
+		h.take_mana(50)
+		self.assertEqual(h.mana, 70)
+
+	def test_take_mana_and_overflow_start_value(self):
+		h = Hero(name="Bron", title="Dragonslayer", health=100, mana=100, mana_regeneration_rate=2)
+		h.take_mana(100)
+		self.assertEqual(h.mana, 100)
+
+	def test_take_mana_without_mana_points(self):
+		h = Hero(name="Bron", title="Dragonslayer", health=100, mana=100, mana_regeneration_rate=2)
+		h.mana = 70
+		h.take_mana()
+		self.assertEqual(h.mana, 72)
 
 
 
