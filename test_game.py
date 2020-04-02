@@ -1,7 +1,8 @@
 import unittest
 from character import Character
-
-
+from enemy import Enemy
+from weaponAndSpell import (Weapon, Spell)
+from Hero import Hero
 
 class TestCharacter(unittest.TestCase):
 
@@ -126,6 +127,88 @@ class TestCharacter(unittest.TestCase):
 		self.assertEqual(result1, False)
 		self.assertEqual(result2, True)
 		self.assertEqual(result3, True)
+		
+		
+	def test_attack_with_weapon(self):
+
+		char = Character(50, 50)
+		weapon = Weapon('wep', 20)
+
+		char.equip(weapon)
+		result = char.attack(by='weapon')
+
+		self.assertEqual(result, 20)
+
+
+	def test_attack_with_spell(self):
+
+		char = Character(20, 30)
+		spell = Spell('spell', 40, 10, 2)
+
+		char.learn(spell)
+		result = char.attack(by='spell')
+
+		self.assertEqual(result, 40)
+
+
+	def test_attack_with_no_weapon_or_spell(self):
+
+		char = Character(80, 100)
+
+		result1 = char.attack(by='weapon')
+		result2 = char.attack(by='spell')
+
+		self.assertEqual(result1, 0)
+		self.assertEqual(result2, 0)
+
+
+
+class TestEnemy(unittest.TestCase):
+
+	def test_attack_by_its_own_damage(self):
+
+		enemy = Enemy(50, 60, 20)
+
+		result = enemy.attack()
+
+		self.assertEqual(result, 20)
+
+
+	def test_attack_by_weapon_or_spell(self):
+
+		enemy = Enemy(50, 50, 50)
+		weapon = Weapon('wep', 5)
+
+		enemy.equip(weapon)
+		result = enemy.attack(by='weapon')
+
+		self.assertEqual(result, 5)
+
+class TestHero(unittest.TestCase):
+
+	def test_known_as(self):
+		h = Hero(name="Bron", title="Dragonslayer", health=100, mana=100, mana_regeneration_rate=2)
+		expected = 'Bron the Dragonslayer'
+		returned = h.known_as()
+
+		self.assertEqual(returned, expected)
+
+	def test_take_mana_but_not_reach_start_value(self):
+		h = Hero(name="Bron", title="Dragonslayer", health=100, mana=100, mana_regeneration_rate=2)
+		h.mana = 20
+		h.take_mana(50)
+		self.assertEqual(h.mana, 70)
+
+	def test_take_mana_and_overflow_start_value(self):
+		h = Hero(name="Bron", title="Dragonslayer", health=100, mana=100, mana_regeneration_rate=2)
+		h.take_mana(100)
+		self.assertEqual(h.mana, 100)
+
+	def test_take_mana_without_mana_points(self):
+		h = Hero(name="Bron", title="Dragonslayer", health=100, mana=100, mana_regeneration_rate=2)
+		h.mana = 70
+		h.take_mana()
+		self.assertEqual(h.mana, 72)
 
 
 
