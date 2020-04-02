@@ -1,3 +1,6 @@
+from weaponAndSpell import (Weapon, Spell)
+
+
 class Character:
 
 	def __init__(self, health, mana):
@@ -6,6 +9,8 @@ class Character:
 		self.mana = mana
 		self.start_heal = health
 		self.start_mana = mana
+		self.weapon_damage = 0
+		self.spell_damage = 0
 
 
 	def is_alive(self):
@@ -63,6 +68,25 @@ class Character:
 			return True
 		else:
 			return False
+		
+	
+	def equip(self, weapon):
+
+		self.weapon_damage = weapon.get_damage()
+
+
+	def learn(self, spell):
+
+		self.spell_damage = spell.get_damage()
+
+
+	def attack(self, by):
+
+		if by == 'weapon':
+			return self.weapon_damage
+
+		if by == 'spell':
+			return self.spell_damage
 
 
 		
