@@ -110,15 +110,22 @@ class TestCharacter(unittest.TestCase):
 
 		self.assertEqual(result_bool, True)
 		self.assertEqual(result_health, 40)
+		
 
+	def test_can_cast(self):
 
+		char = Character(50, 50)
+		mana_cost_1 = 60
+		mana_cost_2 = 40
+		mana_cost_3 = 50
 
+		result1 = char.can_cast(mana_cost_1)
+		result2 = char.can_cast(mana_cost_2)
+		result3 = char.can_cast(mana_cost_3)
 
-
-
-
-
-
+		self.assertEqual(result1, False)
+		self.assertEqual(result2, True)
+		self.assertEqual(result3, True)
 
 
 
