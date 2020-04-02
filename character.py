@@ -57,7 +57,12 @@ class Character:
 			self.health -= damage_points
 
 
+	def can_cast(self, mana_cost):
 
+		if self.mana >= mana_cost:
+			return True
+		else:
+			return False
 
 
 		
