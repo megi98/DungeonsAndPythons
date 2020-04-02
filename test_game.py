@@ -183,6 +183,7 @@ class TestEnemy(unittest.TestCase):
 		result = enemy.attack(by='weapon')
 
 		self.assertEqual(result, 5)
+    
 
 class TestHero(unittest.TestCase):
 
