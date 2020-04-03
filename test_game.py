@@ -129,6 +129,21 @@ class TestCharacter(unittest.TestCase):
 		self.assertEqual(result3, True)
 		
 		
+	def test_learn_when_mana_cost_is_more_than_character_mana(self):
+
+		char = Character(50, 30)
+		spell = Spell('spell', 20, 40, 2)
+		exc = None
+
+		try:
+			char.learn(spell)
+		except Exception as err:
+			exc = err
+
+		self.assertIsNotNone(exc)
+		self.assertEqual(str(exc), 'Cannot cast the mana.')
+		
+		
 	def test_attack_with_weapon(self):
 
 		char = Character(50, 50)
