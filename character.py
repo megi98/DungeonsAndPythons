@@ -76,6 +76,8 @@ class Character:
 
 
 	def learn(self, spell):
+		
+		assert self.can_cast(spell.get_mana_cost()), 'Cannot cast the mana.'
 
 		self.spell_damage = spell.get_damage()
 
