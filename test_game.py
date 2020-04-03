@@ -3,6 +3,8 @@ from character import Character
 from enemy import Enemy
 from weaponAndSpell import (Weapon, Spell)
 from Hero import Hero
+from dungeons import Dungeons
+
 
 class TestCharacter(unittest.TestCase):
 
@@ -225,6 +227,52 @@ class TestHero(unittest.TestCase):
 		h.mana = 70
 		h.take_mana()
 		self.assertEqual(h.mana, 72)
+		
+		
+		
+class TestDungeons(unittest.TestCase):
+
+	def test_init_matrix(self):
+
+		d = Dungeons("level1.txt")
+
+		result = d.init_matrix()
+		expected = ['S.##.....T', '#T##..###.', '#.###E###E', '#.E...###.', '###T#####G']
+
+		self.assertEqual(result, expected)
+
+
+	def test_find_start(self):
+
+		d = Dungeons("level1.txt")
+		d.init_matrix()
+
+		result = d.find_start()
+		expected = [(0,0)]
+
+		self.assertEqual(result, expected)
+
+
+	def test_find_gateway(self):
+
+		d = Dungeons("level1.txt")
+		d.init_matrix()
+
+		result = d.find_gateway()
+		expected = (4, 9)
+
+		self.assertEqual(result, expected)
+
+
+	def test_spawn(self):
+
+		d = Dungeons("level1.txt")
+		d.init_matrix()
+		h = 'some hero'
+
+		result = d.spawn(h)
+
+		self.assertEqual(result, True)
 
 
 
