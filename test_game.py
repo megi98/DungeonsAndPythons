@@ -232,11 +232,12 @@ class TestHero(unittest.TestCase):
 		
 class TestDungeons(unittest.TestCase):
 
-	def test_init_matrix(self):
+	def test_get_matrix(self):
 
 		d = Dungeons("level1.txt")
+		d.init_matrix()
 
-		result = d.init_matrix()
+		result = d.get_matrix()
 		expected = ['S.##.....T', '#T##..###.', '#.###E###E', '#.E...###.', '###T#####G']
 
 		self.assertEqual(result, expected)
@@ -268,7 +269,7 @@ class TestDungeons(unittest.TestCase):
 
 		d = Dungeons("level1.txt")
 		d.init_matrix()
-		h = 'some hero'
+		h = Hero('name', 'title', 50, 60, 2)
 
 		result = d.spawn(h)
 
