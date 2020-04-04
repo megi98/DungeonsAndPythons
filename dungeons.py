@@ -17,19 +17,6 @@ class Dungeons:
 		self.hero_coordinates = ()
 
 
-
-	def print_map(self):
-
-		f = open(self.file, 'r')
-		lines = f.readlines()
-		f.close()
-
-		for line in lines:
-			print(line.strip())
-
-		return
-
-
 	def init_matrix(self):
 
 		f = open(self.file, 'r')
@@ -39,7 +26,16 @@ class Dungeons:
 		for line in lines:
 			self.matrix.append(line.strip())
 
+
+	def get_matrix(self):
+
 		return self.matrix
+
+
+	def print_map(self):
+
+		for line in self.matrix:
+			print(line.strip())
 
 
 	def find_start(self):
@@ -101,23 +97,19 @@ class Dungeons:
 
 
 
-
-
 def main():
 
 	d = Dungeons("level1.txt")
+	d.init_matrix()
 	d.print_map()
-	print(d.init_matrix())
 	print(d.find_start())
 	print(d.find_gateway())
-	hero = 9
+	hero = Hero('name', 'title', 100, 50, 2)
 	print(d.spawn(hero))
-	print(d.matrix)
+	d.print_map()
 	print(d.pick_treasure())
 
 
 if __name__ == '__main__':
 	main()
-
-
 
