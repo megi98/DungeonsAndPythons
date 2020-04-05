@@ -302,10 +302,14 @@ class Dungeons:
 			else:
 				enemy = self.pick_enemy()
 				fight = Fight(self.hero, enemy)
+				
+				
+	def hero_attack(self, by):
+
+		return self.hero.attack(by)
 
 
-
-
+	
 
 def main():
 
