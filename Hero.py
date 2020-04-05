@@ -25,8 +25,8 @@ class Hero(Character):
     def get_mana(self):
         return super().get_mana()
 
-    def can_cast(self):
-        return super().can_cast()
+    def can_cast(self, mana_cost):
+        return super().can_cast(mana_cost)
 
     def take_healing(self, healing_points):
         return super().take_healing(healing_points)
