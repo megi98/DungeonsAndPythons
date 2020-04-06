@@ -2,8 +2,10 @@ import unittest
 from character import Character
 from enemy import Enemy
 from weaponAndSpell import (Weapon, Spell)
-from Hero import Hero
+from hero import Hero
 from dungeons import Dungeons
+from fight import Fight
+
 
 
 class TestCharacter(unittest.TestCase):
@@ -113,7 +115,7 @@ class TestCharacter(unittest.TestCase):
 
 		self.assertEqual(result_bool, True)
 		self.assertEqual(result_health, 40)
-		
+
 
 	def test_can_cast(self):
 
@@ -129,8 +131,8 @@ class TestCharacter(unittest.TestCase):
 		self.assertEqual(result1, False)
 		self.assertEqual(result2, True)
 		self.assertEqual(result3, True)
-		
-		
+
+
 	def test_learn_when_mana_cost_is_more_than_character_mana(self):
 
 		char = Character(50, 30)
@@ -144,8 +146,8 @@ class TestCharacter(unittest.TestCase):
 
 		self.assertIsNotNone(exc)
 		self.assertEqual(str(exc), 'Cannot cast the mana.')
-		
-		
+
+
 	def test_attack_with_weapon(self):
 
 		char = Character(50, 50)
@@ -200,36 +202,51 @@ class TestEnemy(unittest.TestCase):
 		result = enemy.attack(by='weapon')
 
 		self.assertEqual(result, 5)
-    
+
+
 
 class TestHero(unittest.TestCase):
 
 	def test_known_as(self):
+
 		h = Hero(name="Bron", title="Dragonslayer", health=100, mana=100, mana_regeneration_rate=2)
+
 		expected = 'Bron the Dragonslayer'
 		returned = h.known_as()
 
 		self.assertEqual(returned, expected)
 
+
 	def test_take_mana_but_not_reach_start_value(self):
+
 		h = Hero(name="Bron", title="Dragonslayer", health=100, mana=100, mana_regeneration_rate=2)
+
 		h.mana = 20
 		h.take_mana(50)
+
 		self.assertEqual(h.mana, 70)
 
+
 	def test_take_mana_and_overflow_start_value(self):
+
 		h = Hero(name="Bron", title="Dragonslayer", health=100, mana=100, mana_regeneration_rate=2)
+
 		h.take_mana(100)
+
 		self.assertEqual(h.mana, 100)
 
+
 	def test_take_mana_without_mana_points(self):
+
 		h = Hero(name="Bron", title="Dragonslayer", health=100, mana=100, mana_regeneration_rate=2)
+
 		h.mana = 70
 		h.take_mana()
+
 		self.assertEqual(h.mana, 72)
-		
-		
-		
+
+
+
 class TestDungeons(unittest.TestCase):
 
 	def test_get_matrix(self):
@@ -270,10 +287,106 @@ class TestDungeons(unittest.TestCase):
 		d = Dungeons("level1.txt")
 		d.init_matrix()
 		h = Hero('name', 'title', 50, 60, 2)
+		d.find_start()
 
 		result = d.spawn(h)
 
 		self.assertEqual(result, True)
+
+
+class TestFight(unittest.TestCase):
+
+	def test_hero_attack_by_spell(self):
+
+		spell = Spell('Fireball', 50, 30, 2)
+		weapon = Weapon('weapon', 30)
+		hero = Hero('Hero', 'title', 100, 100, 5)
+		enemy = Enemy(90, 80, 30)
+		hero.learn(spell)
+		hero.equip(weapon)
+		f = Fight(hero, enemy)
+
+		f.hero_attack()
+		new_hero_mana = hero.get_mana()
+		new_enemy_health = enemy.get_health()
+
+		self.assertEqual(new_hero_mana, 70)
+		self.assertEqual(new_enemy_health, 40)
+
+
+	def test_hero_attack_by_weapon(self):
+
+		spell = Spell('Fireball', 50, 30, 2)
+		weapon = Weapon('weapon', 55)
+		hero = Hero('Hero', 'title', 100, 100, 5)
+		enemy = Enemy(90, 80, 30)
+		hero.learn(spell)
+		hero.equip(weapon)
+		f = Fight(hero, enemy)
+
+		f.hero_attack()
+		new_enemy_health = enemy.get_health()
+
+		self.assertEqual(new_enemy_health, 35)
+
+
+	def test_hero_attack_when_there_is_nothing_to_attack_with(self):
+
+		hero = Hero('Hero', 'title', 100, 100, 5)
+		enemy = Enemy(90, 80, 30)		
+
+		f = Fight(hero, enemy)
+
+		f.hero_attack()
+		new_enemy_health = enemy.get_health()
+
+		self.assertEqual(new_enemy_health, 90)
+
+
+	def test_enemy_attack_with_spell(self):
+
+		spell = Spell('Fireball', 50, 30, 2)
+		weapon = Weapon('weapon', 30)
+		hero = Hero('Hero', 'title', 100, 100, 5)
+		enemy = Enemy(90, 80, 30)
+		enemy.learn(spell)
+		enemy.equip(weapon)
+		f = Fight(hero, enemy)
+
+		f.enemy_attack()
+		new_enemy_mana = enemy.get_mana()
+		new_hero_health = hero.get_health()
+
+		self.assertEqual(new_enemy_mana, 50)
+		self.assertEqual(new_hero_health, 50)
+
+
+	def test_enemy_attack_with_weapon(self):
+
+		spell = Spell('Fireball', 30, 30, 2)
+		weapon = Weapon('weapon', 35)
+		hero = Hero('Hero', 'title', 100, 100, 5)
+		enemy = Enemy(90, 80, 30)
+		enemy.learn(spell)
+		enemy.equip(weapon)
+		f = Fight(hero, enemy)
+
+		f.enemy_attack()
+		new_hero_health = hero.get_health()
+
+		self.assertEqual(new_hero_health, 65)
+
+
+	def test_enemy_attack_with_its_own_damage(self):
+
+		hero = Hero('Hero', 'title', 100, 100, 5)
+		enemy = Enemy(90, 80, 30)	
+		f = Fight(hero, enemy)	
+
+		f.enemy_attack()
+		new_hero_health = hero.get_health()
+
+		self.assertEqual(new_hero_health, 70)
 
 
 
