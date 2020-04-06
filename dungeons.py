@@ -70,15 +70,16 @@ class Dungeons:
 
 	def spawn(self, hero):
 
-		if len(self.find_start()) == 0:
+		if len(self.start_points) == 0:
 			return False
 
 		else:
-			our_start = self.find_start()[0]
+			self.hero = hero
+			our_start = self.start_points[0]
 			self.hero_coordinates = our_start
 			x = our_start[0]
 			self.matrix[x] = self.matrix[x].replace('S', 'H', 1)
-			self.find_start().pop(0)
+			self.start_points.pop(0)
 			return True
 
 
@@ -114,6 +115,13 @@ class Dungeons:
 		return random.choice(enemies)
 
 
+	def fight(self, hero):
+
+		enemy = self.pick_enemy()
+		f = Fight(hero, enemy)
+		f.start_fight()
+
+
 	def move_hero(self, direction):
 
 		x = self.hero_coordinates[0]
@@ -133,6 +141,7 @@ class Dungeons:
 				self.matrix[x-1] = ''.join(self.matrix[x-1])
 				self.matrix[x] = ''.joim(self.matrix[x])
 				self.hero_coordinates = x-1, y
+				self.hero.take_mana()
 				return True
 
 			elif self.matrix[x-1][y] == 'T':
@@ -145,6 +154,7 @@ class Dungeons:
 				self.matrix[x-1] = ''.join(self.matrix[x-1])
 				self.matrix[x] = ''.joim(self.matrix[x])
 				self.hero_coordinates = x-1, y
+				self.hero.take_mana()
 
 				if treasure[0] is 'health':
 					print('Found health potion!')
@@ -163,8 +173,25 @@ class Dungeons:
 					self.hero.learn(treasure[1])
 
 			else:
-				enemy = self.pick_enemy()
-				fight = Fight(self.hero, enemy)
+				self.hero.take_mana()
+				self.fight(self.hero)
+
+				if self.hero.is_alive():
+					self.matrix[x-1] = list(self.matrix[x-1])
+					self.matrix[x] = list(self.matrix[x])
+					self.matrix[x-1][y] = 'H'
+					self.matrix[x][y] = '.'
+					self.matrix[x-1] = ''.join(self.matrix[x-1])
+					self.matrix[x] = ''.joim(self.matrix[x])
+					self.hero_coordinates = x-1, y
+
+				else:
+					if self.spawn(self.hero) is False:
+						print('There are no free spawning points. Game is over.')
+					else:
+						self.spawn(self.hero)
+						print('Hero is on the next free spawning point. Game continues.')
+
 
 		elif direction is 'down':
 
@@ -180,6 +207,7 @@ class Dungeons:
 				self.matrix[x+1] = ''.join(self.matrix[x+1])
 				self.matrix[x] = ''.join(self.matrix[x])
 				self.hero_coordinates = x+1, y
+				self.hero.take_mana()
 				return True
 
 			elif self.matrix[x+1][y] == 'T':
@@ -193,6 +221,7 @@ class Dungeons:
 				self.matrix[x+1] = ''.join(self.matrix[x+1])
 				self.matrix[x] = ''.join(self.matrix[x])
 				self.hero_coordinates = x+1, y
+				self.hero.take_mana()
 
 				if treasure[0] is 'health':
 					print('Found health potion!')
@@ -211,8 +240,25 @@ class Dungeons:
 					self.hero.learn(treasure[1])
 
 			else:
-				enemy = self.pick_enemy()
-				fight = Fight(self.hero, enemy)
+				self.hero.take_mana()
+				self.fight(self.hero)
+
+				if self.hero.is_alive():
+					self.matrix[x+1] = list(self.matrix[x+1])
+					self.matrix[x] = list(self.matrix[x])
+					self.matrix[x+1][y] = 'H'
+					self.matrix[x][y] = '.'
+					self.matrix[x+1] = ''.join(self.matrix[x+1])
+					self.matrix[x] = ''.join(self.matrix[x])
+					self.hero_coordinates = x+1, y
+
+				else:
+					if self.spawn(self.hero) is False:
+						print('There are no free spawning points. Game is over.')
+					else:
+						self.spawn(self.hero)
+						print('Hero is on the next free spawning point. Game continues.')
+
 
 		elif direction is 'left':
 
@@ -226,6 +272,7 @@ class Dungeons:
 				self.matrix[x][y] = '.'
 				self.matrix[x] = ''.join(self.matrix[x])
 				self.hero_coordinates = x, y-1
+				self.hero.take_mana()
 				return True
 
 			elif self.matrix[x][y-1] == 'T':
@@ -236,6 +283,7 @@ class Dungeons:
 				self.matrix[x][y] = '.'
 				self.matrix[x] = ''.join(self.matrix[x])
 				self.hero_coordinates = x, y-1
+				self.hero.take_mana()
 
 				if treasure[0] is 'health':
 					print('Found health potion!')
@@ -254,8 +302,22 @@ class Dungeons:
 					self.hero.learn(treasure[1])
 
 			else:
-				enemy = self.pick_enemy()
-				fight = Fight(self.hero, enemy)
+				self.hero.take_mana()
+				self.fight(self.hero)
+
+				if self.hero.is_alive():
+					self.matrix[x] = list(self.matrix[x])
+					self.matrix[x][y-1] = 'H'
+					self.matrix[x][y] = '.'
+					self.matrix[x] = ''.join(self.matrix[x])
+					self.hero_coordinates = x, y-1
+
+				else:
+					if self.spawn(self.hero) is False:
+						print('There are no free spawning points. Game is over.')
+					else:
+						self.spawn(self.hero)
+						print('Hero is on the next free spawning point. Game continues.')
 
 		else:
 
@@ -268,8 +330,8 @@ class Dungeons:
 				self.matrix[x][y+1] = 'H'
 				self.matrix[x][y] = '.'
 				self.matrix[x] = ''.join(self.matrix[x])
-
 				self.hero_coordinates = x, y+1
+				self.hero.take_mana()
 				return True
 
 			elif self.matrix[x][y+1] == 'T':
@@ -280,8 +342,8 @@ class Dungeons:
 				self.matrix[x][y+1] = 'H'
 				self.matrix[x][y] = '.'
 				self.matrix[x] = ''.join(self.matrix[x])
-
 				self.hero_coordinates = x, y+1
+				self.hero.take_mana()
 
 				if treasure[0] is 'health':
 					print('Found health potion!')
@@ -300,16 +362,28 @@ class Dungeons:
 					self.hero.learn(treasure[1])
 
 			else:
-				enemy = self.pick_enemy()
-				fight = Fight(self.hero, enemy)
-				
-				
-	def hero_attack(self, by):
+				self.hero.take_mana()
+				self.fight(self.hero)
 
-		return self.hero.attack(by)
+				if self.hero.is_alive():
+					self.matrix[x] = list(self.matrix[x])
+					self.matrix[x][y+1] = 'H'
+					self.matrix[x][y] = '.'
+					self.matrix[x] = ''.join(self.matrix[x])
+					self.hero_coordinates = x, y+1
 
-
+				else:
+					if self.spawn(self.hero) is False:
+						print('There are no free spawning points. Game is over.')
+					else:
+						self.spawn(self.hero)
+						print('Hero is on the next free spawning point. Game continues.')
 	
+
+	def hero_attack(self, by):
+		pass
+		
+
 
 def main():
 
@@ -319,14 +393,18 @@ def main():
 	print(d.find_start())
 	print(d.find_gateway())
 	hero = Hero('name', 'title', 100, 50, 2)
+	spell = Spell('spell', 100, 30, 2)
+	hero.learn(spell)
 	print(d.spawn(hero))
 	print(d.get_hero_coordinates())
 	d.print_map()
 	d.move_hero('right')
-	d.move_hero('down')
 	d.print_map()
+
 
 
 if __name__ == '__main__':
 	main()
+
+
 
