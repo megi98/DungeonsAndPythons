@@ -9,8 +9,8 @@ class Character:
 		self.mana = mana
 		self.start_heal = health
 		self.start_mana = mana
-		self.weapon_damage = 0
-		self.spell_damage = 0
+		self.weapon = None
+		self.spell = None
 
 
 	def is_alive(self):
@@ -62,34 +62,39 @@ class Character:
 			self.health -= damage_points
 
 
+	def take_mana_damage(self, damage_points):
+
+		self.mana -= damage_points
+
+		
 	def can_cast(self, mana_cost):
 
 		if self.mana >= mana_cost:
 			return True
 		else:
 			return False
-		
-	
+
+
 	def equip(self, weapon):
 
-		self.weapon_damage = weapon.get_damage()
+		self.weapon = weapon
 
 
 	def learn(self, spell):
-		
+
 		assert self.can_cast(spell.get_mana_cost()), 'Cannot cast the mana.'
 
-		self.spell_damage = spell.get_damage()
+		self.spell = spell
 
 
 	def attack(self, by):
 
 		if by == 'weapon':
-			return self.weapon_damage
+			if self.weapon is not None:
+				return self.weapon.get_damage()
 
 		if by == 'spell':
-			return self.spell_damage
+			if self.spell is not None:
+				return self.spell.get_damage()
 
-
-		
-
+		return 0
