@@ -58,6 +58,11 @@ class Enemy(Character):
 			return super().attack(by)	
 
 
-	def take_damage(self):
+	def take_damage(self, damage_points):
 
-		super().take_damage(self.damage)
+		super().take_damage(damage_points)
+
+
+	def take_mana_damage(self, damage_points):
+
+		super().take_mana_damage(damage_points)
